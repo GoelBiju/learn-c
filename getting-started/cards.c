@@ -1,5 +1,5 @@
 /*
-    * Cards program example.
+    Cards program example.
 */
 
 #include <stdio.h>
