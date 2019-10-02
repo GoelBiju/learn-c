@@ -137,9 +137,9 @@ int main(int argc, char* argv[])
              return -1;
         }
                                                                                      
-                                                                                            printf("Successfully set %s as read-only.\n", mountPoint);
+        printf("Successfully set %s as read-only.\n", mountPoint);
 
-
+        
         // Bind mount the temporary location with the mount location.
         res = mount_bind(tmpDirName, mountLocation);
         if (res < 0)
