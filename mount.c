@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     }
     else if (argc < 3)
     {
-        printf("* Please provide the mount point and the mount location (including the directory to create), in that order.\nE.g. ./mount /opt /opt/software/cmake");
+        printf("* Please provide the mount point and the mount location (including the directory to create), in that order.\nE.g. ./mount /opt /opt/software/cmake\n");
         return -1;
     }
     else
