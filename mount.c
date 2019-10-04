@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+// Goel Biju - 2019
+
 
 // Declarations - prototype functions
 int mount_readonly(char* mountPoint);
@@ -53,8 +55,8 @@ int main(int argc, char* argv[])
     callingUid = atoi(sudoUid);
     callingGid = atoi(sudoGid);
 
-    printf("True UID (of calling user): %u\n", callingUid);
-    printf("True GID (of calling group): %u\n", callingGid);
+    //printf("True UID (of calling user): %u\n", callingUid);
+    //printf("True GID (of calling group): %u\n", callingGid);
 
 
     // Handle the arguments that are passed to the program.
@@ -136,10 +138,10 @@ int main(int argc, char* argv[])
              printf("* Failed to set %s as read-only.\n", mountPoint);
              return -1;
         }
-                                                                                     
+
         printf("Successfully set %s as read-only.\n", mountPoint);
 
-        
+
         // Bind mount the temporary location with the mount location.
         res = mount_bind(tmpDirName, mountLocation);
         if (res < 0)
@@ -152,7 +154,7 @@ int main(int argc, char* argv[])
     }
     else if (argc < 3)
     {
-        printf("* Please provide the mount point and the mount location (including the directory to create), in that order.\n");
+        printf("* Please provide the mount point and the mount location (including the directory to create), in that order.\nE.g. ./mount /opt /opt/software/cmake");
         return -1;
     }
     else
@@ -162,7 +164,7 @@ int main(int argc, char* argv[])
     }
 
 
-    printf("- Operation complete.");
+    printf("- Operation complete.\n");
     return 0;
 }
 
@@ -208,6 +210,3 @@ void unmount(char* targetDirectory)
     int result = umount(targetDirectory);
     printf("Unmounting result: %d\n", result);
 }
-
-
-                            
