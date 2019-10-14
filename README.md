@@ -4,7 +4,8 @@ A repository of code related to learning C through the use of the [Head First C]
 
 # Compiling
 
-Compiling the C programs can be done by using GCC. On Windows I installed MingW in order accomplish this:
+Compiling the C programs can be done by using GCC. On Windows this can be accomplished through installing MingW and performing
+the following in a bash environment:
 
 ```bash
 gcc inputfile.c -o outputfile
