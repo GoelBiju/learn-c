@@ -42,15 +42,6 @@ int main(int argc, char* argv[])
     // 4. Create specified folder in a default writable location (i.e. /tmp)
     // 5. Bind mount the mounted location and the temporary location.
 
-    // sourceDirectory can be treated as the folder in /tmp
-    // targetDirectory can be treated as the folder created in the mount location
-
-    // mount_readonly();
-    // mount_readwrite();
-    // mount_bind("", "");
-    // unmount("withfiles");
-    
-
     // Get the real uid/gid from the user who called the program.
     uid_t callingUid = getuid();
     gid_t callingGid = getgid();
@@ -58,20 +49,7 @@ int main(int argc, char* argv[])
     printf("- True UID (of calling user): %u\n", callingUid);
     printf("- True GID (of calling group): %u\n", callingGid);
 
-    // Set the uid to root in order to perform the actions required by the program.
-    if (setuid(0) < 0) {
-        errsv = errno;
-        printf("* Setting the UID to root (0) did not work, are you sure the executable has the setuid bit set?\n");
-        printf("Error Code: %d (%s)\n", errsv, strerror(errsv));
-
-        return errsv;
-    }
-
-    printf("- Set UID to root (0): %u\n", getuid());
-    
-
     // Handle the arguments that are passed to the program.
-    // int i;
     if (argc == 2)
     {
         int res;
@@ -134,6 +112,18 @@ int main(int argc, char* argv[])
                 }
 
                 printf("Created mount directory %s (permission: 0755), result: %d\n", targetLocation, res);
+
+                // Ensure the uid and gid of the created directory is set as root.
+                if (chown(targetLocation, 0, 0) == -1)
+                {
+                    errsv = errno;
+                    printf("* Failed to change the ownership of the temporary directory (%s) to 0 (uid): 0 (gid).\n", targetLocation);
+                    printf("Error Code: %d (%s)\n", errsv, strerror(errsv));
+                    
+                    return errsv;
+                }
+
+                printf("Successfully changed ownership of created mount location (%s) to 0 (uid): 0 (gid).\n", targetLocation);
             }
         }
         else 
