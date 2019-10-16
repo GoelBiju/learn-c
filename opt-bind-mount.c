@@ -14,10 +14,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <limits.h>
 
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
 
 #define MOUNT_POINT "/opt"
 
@@ -53,25 +55,57 @@ int main(int argc, char* argv[])
     if (argc == 2)
     {
         int res;
-
         printf("\nNumber of arguments supplied: %d\n", argc - 1);
 
         char* mountLocation = argv[1];
-        printf("- Mount location specified to create folder and mount bind: %s/%s\n", MOUNT_POINT, mountLocation);
 
+        // Perform some checks to ensure the mount location argument provided is valid:
+        //  1. Get the real path from the mounted location.
+        //  2. (NOT NEEDED?) Check the length of the mount location provided and ensure it is of the correct size.
+        //  3. Check that the start of mount location provided is matching to the start of the mount point.
+
+        char buf[4096];
+        char* result = realpath(mountLocation, buf);
+        if (!result)
+        {
+            errsv = errno;
+            printf("* Failed to get the real-path from mount location %s.\n", mountLocation);
+            printf("Error Code: %d (%s)\n", errsv, strerror(errsv));
+        }
+
+        printf("- Got real-path: %s\n", buf);
+
+        return 0;
+
+        // TODO: Ensure the mount location has /opt as it's prefix.
+        // size_t mountPointLength = strlen(MOUNT_POINT);
+        // size_t mountLocationLength = strlen(mountLocation);
+        
+        // // Ensure the length of the location provided is greater than 
+        // // the minimum length required (/opt/).
+        // if (mountLocationLength <= mountPointLength + 1) {
+        //     printf("* Please specify a mount location under %s.\n", MOUNT_POINT);
+        //     return 2;
+        // }
+
+        // printf("- Length of mount point: %lu\n", mountPointLength);
+        // printf("- Length of mount location: %lu\n", mountLocationLength);
+        // printf("- Mount location specified to create folder and mount bind: %s\n", mountLocation);
+
+        // return 0;
 
         // Mount our mount point (/opt) as writable if the specified mount location does not exist.
         char targetLocation[100];
-        strcpy(targetLocation, MOUNT_POINT);
-        strncat(targetLocation, "/", 1);
-        strncat(targetLocation, mountLocation, strlen(mountLocation));
+        //strcpy(targetLocation, MOUNT_POINT);
+        //strncat(targetLocation, "/", 1);
+        //strncat(targetLocation, mountLocation, strlen(mountLocation));
 
 
         // Check to see if the specified location already exists, if so, use that.
         // If it does not exist then create it.
         struct stat s;
         res = stat(targetLocation, &s);
-        if (res < 0) 
+        if (res < 0)
         {
             errsv = errno;
             if (errsv != ENOENT) 
@@ -197,14 +231,14 @@ int main(int argc, char* argv[])
 
         printf("Successfully bind mounted %s with %s.\n", tmpDirName, targetLocation);
     }
-    else if (argc < 2) 
+    else if (argc < 2 || argc > 2)  
     {
-        printf("* Please provide the mount location, within the mounted directory %s, for bind mounting.\n", MOUNT_POINT);
+        printf("* Please provide a mount location, with the mounted directory %s as prefix, for bind mounting.\n", MOUNT_POINT);
         return 2;
     }
     else 
     {
-        printf("* No arguments passed to the program.\n");
+        printf("* No valid arguments passed to the program.\n");
     	return 2;
     }
 
