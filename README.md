@@ -1,4 +1,4 @@
-# learn-c
+# Learn C
 
 A repository of code related to learning C through the use of the [Head First C](https://www.amazon.co.uk/Head-First-C-David-Griffiths/dp/1449399916) book.
 
