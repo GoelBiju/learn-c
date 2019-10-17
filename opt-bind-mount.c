@@ -29,8 +29,6 @@ int mount_readonly(char* mountPoint);
 int mount_readwrite(char* mountPoint);
 int mount_bind(char* sourceDirectory, char* targetDirectory);
 
-// void unmount(char* targetDirectory);
-
 
 int main(int argc, char* argv[]) 
 {
@@ -61,10 +59,6 @@ int main(int argc, char* argv[])
         printf("- Mount location specified to create folder and mount bind: %s\n", mountLocation);
 
         // Perform some checks to ensure the mount location argument provided is valid:
-        //  1. Get the real path from the mounted location.
-        //  2. (NOT NEEDED?) Check the length of the mount location provided and ensure it is of the correct size.
-        //  3. Check that the start of mount location provided is matching to the start of the mount point.
-
         char targetLocation[MAX_PATH];
         
         // NOTE: Running realpath will check if the path provided exists or not.
@@ -81,22 +75,6 @@ int main(int argc, char* argv[])
         }
 
         printf("- Got real-path of provided mount location: %s\n", targetLocation);
-
-
-        // Check to see if the length of the mount point is correct.
-        // size_t mountPointLength = strlen(MOUNT_POINT);
-        // size_t mountLocationLength = strlen(mountLocation);
-        
-        // Ensure the length of the location provided is greater than 
-        // the minimum length required (/opt/).
-        // if (mountLocationLength <= mountPointLength + 1) {
-        //     printf("* Please specify a mount location under %s.\n", MOUNT_POINT);
-        //     return 2;
-        // }
-
-        // printf("- Length of mount point: %lu\n", mountPointLength);
-        // printf("- Length of mount location: %lu\n", mountLocationLength);
-        // printf("- Mount location specified to create folder and mount bind: %s\n", mountLocation);
 
 
         // Ensure the mount location has /opt as it's prefix by concatenate
@@ -145,8 +123,7 @@ int main(int argc, char* argv[])
 
                 printf("Successfully set %s as read/write.\n", MOUNT_POINT);
 
-                // We can now create the directory.
-                // Use 0755 to allow for readable by other than root.
+                // We can now create the directory; use 0755 to allow for readable by other than root.
                 res = mkdir(targetLocation, 0755);
                 if (res <  0)
                 {
@@ -287,10 +264,3 @@ int mount_bind(char* sourceDirectory, char* targetDirectory)
 
     return result;
 }
-
-
-// void unmount(char* targetDirectory)
-// {
-//     int result = umount(targetDirectory);
-//     // printf("Unmounting result: %d\n", result);
-// }
